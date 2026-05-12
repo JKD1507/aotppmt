@@ -4,17 +4,17 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true # Removes the yellow warning
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
         with:
           java-version: '17'
-          distribution: 'zulu' # Most stable for Android
+          distribution: 'zulu'
       - uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
-          flutter-version: '3.10.0' # Matches your project SDK
+          flutter-version: '3.10.0'
       - name: Clean and Get Dependencies
         run: |
           flutter clean
@@ -25,4 +25,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: aotppmt-apk
-          path: build/app/outputs/flutter-apk/app-release.apk # Standard artifact path
+          path: build/app/outputs/flutter-apk/app-release.apk
