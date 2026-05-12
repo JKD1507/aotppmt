@@ -5,8 +5,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      # 1. Resolves the yellow Node.js warning
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true 
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
       - uses: actions/checkout@v4
       
@@ -20,18 +19,20 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
-          # 2. Matches your pubspec.yaml SDK requirement
-          flutter-version: '3.10.0' 
+          flutter-version: '3.10.0'
           
       - name: Repair and Build
         run: |
+          # Give GitHub permission to run the Android builder
+          chmod +x android/gradlew
           flutter clean
           flutter pub get
-          # 3. Fixes a common cloud build crash for apps with assets
-          flutter build apk --release --no-tree-shake-icons 
+          # The --no-tree-shake-icons flag prevents the common "Exit Code 1"
+          flutter build apk --release --no-tree-shake-icons
           
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: aotppmt-apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+          # More flexible path to find the APK
+          path: build/app/outputs/flutter-apk/*.apk
