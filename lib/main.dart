@@ -4,8 +4,7 @@ import 'screens/login_screen.dart';
 import 'screens/payment_screen.dart';
 
 void main() {
-  // Required for SQLite initialization
-  WidgetsFlutterBinding.ensureInitialized(); 
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 
@@ -21,10 +20,10 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
       ),
-      // Starts at the Splash Screen
       initialRoute: '/',
       routes: {
-        '/': (context) => SplashScreen(),
+        // Fixed: Added 'const' to constructors to improve performance
+        '/': (context) => const SplashScreen(),
         '/login': (context) => const LoginScreen(),
         '/payment': (context) => const PaymentScreen(),
       },
