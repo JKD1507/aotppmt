@@ -1,0 +1,43 @@
+name: aotppmt
+description: "Aotppmt Flutter Project - OTP, SQLite, and UPI Integration"
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.10.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Local Database
+  sqflite: ^2.3.0
+  path: ^1.9.0
+
+  # Date Formatting for Expiry Logic
+  intl: ^0.19.0
+
+  # For opening GPay, PhonePe, Paytm (UPI Intent)
+  url_launcher: ^6.2.5
+
+  # For OTP & SMS Permissions
+  permission_handler: ^11.3.1
+
+  # Local Storage for Session State
+  shared_preferences: ^2.2.2
+
+  # Icons
+  cupertino_icons: ^1.0.6
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/jkqr.jpg
+    # Add other assets here as you create them
