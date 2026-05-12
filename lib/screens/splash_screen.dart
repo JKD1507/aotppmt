@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 import '../database/db_helper.dart';
 
 class SplashScreen extends StatefulWidget {
+  // Fixed: Added named 'key' parameter to the constructor
+  const SplashScreen({super.key});
+
   @override
-  _SplashScreenState createState() => _SplashScreenState();
+  State<SplashScreen> createState() => _SplashScreenState();
 }
 
+// Fixed: Removed library_private_types_in_public_api warning
 class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
@@ -14,19 +18,18 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _checkStatus() async {
-    // 1. Initialize DB and create the default 'Test User'
     final dbHelper = DbHelper();
     final db = await dbHelper.database;
 
-    // 2. Fetch the user record
     final List<Map<String, dynamic>> user = await db.query('User_Mst', limit: 1);
     
-    // Artificial delay to show your Splash UI
     await Future.delayed(const Duration(seconds: 3));
 
+    // Fixed: Added 'mounted' checks for all BuildContext usage across async gaps
+    if (!mounted) return;
+
     if (user.isNotEmpty) {
-      // Check if payment is already done ('Y')
-      if (user[0]['Pmt_Flag'] == 'Y') {
+      if (user.first['Pmt_Flag'] == 'Y') {
         Navigator.pushReplacementNamed(context, '/payment');
       } else {
         Navigator.pushReplacementNamed(context, '/login');

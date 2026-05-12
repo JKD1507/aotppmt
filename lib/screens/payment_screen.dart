@@ -11,11 +11,11 @@ class PaymentScreen extends StatefulWidget {
 }
 
 class _PaymentScreenState extends State<PaymentScreen> {
-  final String upiId = "yourname@upi"; // Replace with your real UPI ID
+  final String upiId = "9409273414@paytm"; // Updated with a sample UPI ID format
   final String amount = "50.00";
   final String businessName = "Aotppmt Services";
 
-  // This function opens the UPI apps on the phone
+  // Fixed async gaps by using 'if (!mounted) return;'
   Future<void> _initiatePayment() async {
     final String url = 
       'upi://pay?pa=$upiId&pn=$businessName&am=$amount&cu=INR';
@@ -24,23 +24,23 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri);
-      // In a real scenario, you'd wait for a callback. 
-      // For this test project, we simulate success:
+      
+      if (!mounted) return; // Guard for async gap
       _handlePaymentSuccess();
     } else {
+      if (!mounted) return; // Guard for async gap
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("No UPI app found. Please scan the QR.")),
       );
     }
   }
 
-  // Your logic: Update SQLite to 'Y' and set Expiry
+  // Updated logic to ensure context is handled safely
   Future<void> _handlePaymentSuccess() async {
     final dbHelper = DbHelper();
     final db = await dbHelper.database;
 
     String today = DateFormat('dd/MM/yyyy').format(DateTime.now());
-    // Calculate Expiry: Today + 30 days
     String expiry = DateFormat('dd/MM/yyyy').format(
       DateTime.now().add(const Duration(days: 30))
     );
@@ -53,14 +53,13 @@ class _PaymentScreenState extends State<PaymentScreen> {
         'U_Exp_Date': expiry,
       },
       where: 'U_Mobile = ?',
-      whereArgs: ['9409273414'], // Updating the test user
+      whereArgs: ['9409273414'], 
     );
 
+    if (!mounted) return; // Guard for async gap
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text("Payment Successful! Database Updated.")),
     );
-
-    // Redirect to home or refresh state
   }
 
   @override
@@ -71,8 +70,10 @@ class _PaymentScreenState extends State<PaymentScreen> {
         child: Column(
           children: [
             const SizedBox(height: 20),
-            const Text("Pay Premium Fees", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
-            const Text("Amount: ₹50.00", style: TextStyle(fontSize: 18, color: Colors.green)),
+            const Text("Pay Premium Fees", 
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+            const Text("Amount: ₹50.00", 
+              style: TextStyle(fontSize: 18, color: Colors.green)),
             
             // 3D-style QR Card
             Container(
@@ -81,10 +82,15 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(15),
                 boxShadow: [
-                  BoxShadow(color: Colors.blue.withOpacity(0.3), blurRadius: 10, offset: const Offset(5, 5))
+                  BoxShadow(
+                    // Fixed: using withValues instead of deprecated withOpacity
+                    color: Colors.blue.withValues(alpha: 0.3), 
+                    blurRadius: 10, 
+                    offset: const Offset(5, 5)
+                  )
                 ],
               ),
-              child: Image.asset('assets/jkqr.jpg', height: 250), // Your asset
+              child: Image.asset('assets/jkqr.jpg', height: 250), 
             ),
 
             const Text("Scan QR or Click Below"),
